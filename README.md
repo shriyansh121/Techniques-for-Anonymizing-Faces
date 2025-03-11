@@ -12,11 +12,19 @@ The main purpose of face blurring is to protect individual privacy by anonymizin
 
 The significance of face blurring extends beyond privacy protection to ethical compliance and legal obligations. Many countries have strict regulations about how personally identifiable information, including facial images, can be handled and shared. Implementing face blurring helps organizations comply with these laws, particularly in contexts involving surveillance and data collection from public spaces or gatherings. Furthermore, it enhances public trust in technologies like security cameras and social platforms, as people are more likely to support and use services that demonstrate a commitment to protecting user privacy. As the digital landscape evolves, the role of face blurring becomes increasingly important in fostering a safer and more respectful online environment.
 
+## Applications
+* It helps in Noise removal. As noise is considered as high pass signal so by the application of low pass filter kernel we restrict noise.
+* It helps in smoothing the image.
+* Low intensity edges are removed.
+* It helps in hiding the details when necessary. For e.g. in many cases police deliberately want to hide the face of the victim, in such cases blurring is required.
+
 ## Methods for Face Blurring
 
-In OpenCV, face blurring can be achieved through two primary methods: Gaussian blur and pixelated blur. The Gaussian blur method applies a mathematical function to create a smoothing effect that blurs the face, making facial features indistinct and maintaining the overall aesthetic quality of the image. This method is ideal for contexts where a subtle form of anonymization is sufficient. 
+**Gaussian Blurring:** Gaussian blur is the result of blurring an image by a Gaussian function. It is a widely used effect in graphics software, typically to reduce image noise and reduce detail. It is also used as a preprocessing stage before applying our machine learning or deep learning models. 
 
-On the other hand, the pixelated blur, or mosaic blur, breaks the image area of the face into distinct blocks, each replaced by a single average color. This creates a more pronounced, pixel-like effect that clearly indicates the intentional obscuration of features. Both methods have their applications depending on the level of anonymity required and the visual impact desired on the final media. Choosing between these techniques involves considering factors like the specific privacy requirements, the nature of the project, and the sensitivity of the recorded environments.
+**Median Blur:** The Median Filter is a non-linear digital filtering technique, often used to remove noise from an image or signal. Median filtering is very widely used in digital image processing because, under certain conditions, it preserves edges while removing noise. It is one of the best algorithms to remove Salt and pepper noise.
+
+**Bilateral Blur:** A bilateral filter is a non-linear, edge-preserving, and noise-reducing smoothing filter for images. It replaces the intensity of each pixel with a weighted average of intensity values from nearby pixels. This weight can be based on a Gaussian distribution. Thus, sharp edges are preserved while discarding the weak ones.
 
 ## Workflow
 
@@ -35,7 +43,7 @@ Face detection is the first critical step in the process of anonymizing facial i
 
 ###  Step 2 is to extract the Region of Interest (ROI):
 
-![image](https://github.com/user-attachments/assets/c8aaabee-cf89-4694-baec-7596e6488496)
+<img width="400" alt="Image" src="https://github.com/user-attachments/assets/5897e816-20db-41e2-8166-f12d2571f6c9" />
 
 When a face detector identifies a face in an image, it provides the bounding box coordinates, crucial for locating and extracting the face. These coordinates include:
 
@@ -47,7 +55,7 @@ These coordinates allow for accurate extraction of the Region of Interest (ROI),
 
 ### Step 3 is to actually blur/anonymize the face:
 
-![image](https://github.com/user-attachments/assets/f44433dd-3159-477c-8762-c8acf2eb8aba)
+<img width="400" alt="Image" src="https://github.com/user-attachments/assets/673a3191-c213-410a-8e7f-63f66c657173" />
 
 In the process of blurring images, especially for anonymizing faces, several techniques can be applied to achieve varying degrees of obfuscation. Here are some common methods:
 
@@ -65,7 +73,7 @@ Each of these methods can be chosen based on the specific requirements of image 
 
 ### Step 4 is to store the blurred face back in the original image:
 
-![image](https://github.com/user-attachments/assets/e3fe9f08-6df9-40ee-a473-8fbbb6f11028)
+<img width="500" alt="Image" src="https://github.com/user-attachments/assets/cba3f633-9691-41bd-b55f-a84fa797eb93" />
 
 Using the original (x, y)-coordinates obtained from the face detection process, the next step involves integrating the blurred or anonymized face back into the original image. This crucial phase is executed using NumPy array slicing, a technique prevalent in image processing tasks, especially within the OpenCV framework in Python.
 
@@ -75,17 +83,61 @@ Once the face is successfully blurred, this altered ROI is replaced back into it
 
 At this stage, the face anonymization pipeline is considered complete. The original image now features the blurred faces, ensuring privacy and anonymity while retaining the context and background of the image for further use or analysis. This method effectively balances privacy concerns with the utility of visual data.
 
-## Face Blurring of single face in single image
+## Face Blurring with Gaussian Blur
+
+Gaussian blur is a widely used image processing technique that smooths out or blurs an image by averaging the pixel values in a neighborhood around each pixel, with the average weighted according to a Gaussian function. This process helps reduce image noise and detail, making it useful in applications like edge detection and facial recognition.
+
+The Gaussian blur works by applying a convolution operation to the image. In this operation, a kernel (a small matrix) is moved over the image, and at each pixel, the weighted average of the surrounding pixels is computed. The kernel used in Gaussian blur has values that follow a Gaussian distribution, meaning that the center of the kernel has the highest weight, and the weights decrease as we move farther from the center. This ensures that the pixels closer to the center of the kernel contribute more to the output pixel value than those farther away.
+
+The size of the kernel and the standard deviation (denoted as "sigma") control the extent of the blur. A larger kernel or higher sigma value results in a stronger blur, where more pixels are averaged, leading to a more significant smoothing effect. Conversely, a smaller kernel or lower sigma value produces a subtler blur. The kernel size must always be odd to ensure that there is a clear center pixel.
+
+In the context of face detection, Gaussian blur is often applied to the detected face region to anonymize or obscure the facial details, which can be useful for privacy protection. The Gaussian blur effectively smooths out fine facial details, making them harder to distinguish, while still preserving the general shape and structure of the face.
+
+#### Syntax of GaussianBlur
+```python
+blurred_image = cv2.GaussianBlur(image, 
+                                 ksize=(75, 75),  # Size of the kernel
+                                 sigmaX=30,       # Standard deviation in the X direction
+                                 sigmaY=30,       # Standard deviation in the Y direction
+                                 borderType=cv2.BORDER_DEFAULT)  # Border handling
+```
+
+![Image](https://github.com/user-attachments/assets/7cf6cd27-8b88-4f90-8966-87828be43244)
+
+## Summary of Studies 
+Gaussian blur is a widely used technique in image processing that smooths images by reducing noise and minor details through convolution with a Gaussian kernel. This method is particularly effective for enhancing the quality of synthetic images generated from 3D models, making them appear more realistic and similar to actual photographs. It works by blurring the image in a way that preserves low spatial frequencies while diminishing higher frequency noise and details, which are often perceived as visual noise.
+
+In practical applications, Gaussian blur is instrumental in fields like medical imaging, where it enhances the visibility of structures such as the optic disc in retinal scans. By carefully selecting the standard deviation (sigma) of the Gaussian function, the extent of blurring can be controlled, allowing for a balance between noise reduction and detail preservation. This control is crucial as it ensures that important features are not lost while reducing unwanted noise.
+
+Furthermore, experiments in image processing have demonstrated that smaller kernel sizes, such as 3x3, often yield the best results by providing an optimal balance of detail and smoothing. This size is sufficient to achieve noticeable improvements in image quality without overly distorting the image content.
+
+Overall, Gaussian blur serves as a fundamental tool in both general and specialized image processing tasks. It is essential for preparing images in pre-processing steps, enhancing the quality of output images, and improving the representation of both synthetic and real-world images. The technique's ability to adapt to various applications by adjusting the kernel size and sigma value makes it a versatile and invaluable part of the image processing toolkit.
+
+## References
+* Jana, S., Parekh, R. and Sarkar, B. (2021) “A semi-supervised approach for automatic detection and segmentation of optic disc from retinal fundus image,” in J. Nayak et al. (eds.) Handbook of Computational Intelligence in Biomedical Engineering and Healthcare. Elsevier, pp. 65–91.
+* Lugo, G., Hajari, N. and Cheng, I. (2022) “Semi-supervised learning approach for localization and pose estimation of texture-less objects in cluttered scenes,” Array (New York, N.Y.), 16(100247), p. 100247. Available at: https://doi.org/10.1016/j.array.2022.100247.
+* Misra, S. and Wu, Y. (2020) “Machine learning assisted segmentation of scanning electron microscopy images of organic-rich shales with feature extraction and feature ranking,” in S. Misra, H. Li, and J. He (eds.) Machine Learning for Subsurface Characterization. Elsevier, pp. 289–314.
+
+## Gaussian Blur in Image Processing: A Step Towards Face Privacy 
+
+### Face Blurring of single face in image using GaussianBlur
+
+<img width="632" alt="Image" src="https://github.com/user-attachments/assets/3e052406-957a-452f-9752-5f8758e3d450" />
+
+The function `single_face_gaussian_blur(image_path)` processes an image by applying a Gaussian blur to the detected face. First, the image is loaded using OpenCV's `cv2.imread()`, which reads the image from the specified file path. If the image cannot be loaded, an error message is printed. The image is then resized by a factor of 1.5 in both dimensions, making it larger and easier to process. The image is converted to grayscale using `cv2.cvtColor()` since face detection algorithms work better on single-channel images. A pre-trained Haar Cascade classifier is used to detect faces. The `detectMultiScale()` function returns the coordinates of detected faces in the form of `x, y, w, h` (top-left corner and dimensions). If no faces are detected, an error message is printed.
+
+Once a face is detected, the region containing the face is extracted from the original image. A Gaussian blur is then applied to this face region using `cv2.GaussianBlur()`. The blurred face is then placed back into the original image, replacing the original face region. The images are converted from BGR to RGB format for proper display using `matplotlib`. Finally, multiple images (original, grayscale, face region, blurred face, and final image) are plotted in a 3x2 grid to visualize the results.
+
+### Face Blurring of multiple face in single image
 
 
 
-## Face Blurring of multiple face in single image
+### Real Time Face Blurring
 
 
-
-## Real Time Face Blurring
-
+### Face Blurring in Video
 
 
-## Face Blurring in Video
+## Face Blurring using Median Blur
+
 
